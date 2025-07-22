@@ -13,6 +13,8 @@ project(refed
     LANGUAGES CXX
 )
 
+include(FetchContent)
+
 # We include this just to use CMAKE_INSTALL_INCLUDEDIR and CMAKE_INSTALL_LIBDIR (is that an overkill?!)
 # @see https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html
 include(GNUInstallDirs)
@@ -51,8 +53,41 @@ target_sources(refed INTERFACE
 target_compile_features(refed INTERFACE cxx_std_11)
 
 ##############
-# TODO Tests #
+# Tests      #
 ##############
+
+# GoogleTest requires at least C++17
+# TODO do this only for the tests target
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG        v1.17.0
+)
+
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(googletest)
+
+enable_testing()
+
+######################################################################
+# Tests: Target: refed-tests-unit (Unit Tests for the refed library) #
+######################################################################
+
+add_executable(refed-tests-unit
+    "${CMAKE_SOURCE_DIR}/tests/dummy.cpp"
+)
+
+target_link_libraries(refed-tests-unit
+    GTest::gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(refed-tests-unit)
 
 ###########
 # Install #
@@ -85,7 +120,7 @@ install(EXPORT refedTargets
 # Generate the config and version files
 write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/refedConfigVersion.cmake"
-    VERSION ${PROJECT_VERSION}
+    VERSION "${PROJECT_VERSION}"
     COMPATIBILITY SameMajorVersion
 )
 
@@ -96,8 +131,10 @@ configure_package_config_file(
     INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/refed"
 )
 
-install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/refedConfig.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/refedConfigVersion.cmake"
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/refed
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/refedConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/refedConfigVersion.cmake"
+    DESTINATION
+        "${CMAKE_INSTALL_LIBDIR}/cmake/refed"
 )

@@ -5,8 +5,8 @@ include(FetchContent)
 
 FetchContent_Declare(
     refed
-    GIT_REPOSITORY https://github.com/hbobenicio/refed.git
-    GIT_TAG        fb7bcf690377913053b4dc8b7abc04a370540f6c # 0.0.1
+    GIT_REPOSITORY "https://github.com/hbobenicio/refed.git"
+    GIT_TAG        "f5a2aa2d958a1526a0740f062e0f03d8a256e38a"
 )
 
 FetchContent_MakeAvailable(refed)
