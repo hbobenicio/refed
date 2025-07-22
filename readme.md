@@ -16,12 +16,16 @@ Because it's dumb to rely on compiler specific macros for this simple use case.
 ## Usage
 
 ```cpp
+#include <iostream>
+
 #include <refed/defer.hpp>
 
 int main() {
-    refed::Defer _{ [](){ std::cout << "It Works 1!\n"; } };
-    refed::Defer _{ [](){ std::cout << "It Works 2!\n"; } };
-    refed::Defer _{ [](){ std::cout << "It Works 3!\n"; } };
+    using refed::Defer;
+
+    Defer d1{ [](){ std::cout << "It Works 1!\n"; } };
+    Defer d2{ [](){ std::cout << "It Works 2!\n"; } };
+    Defer d3{ [](){ std::cout << "It Works 3!\n"; } };
 }
 ```
 

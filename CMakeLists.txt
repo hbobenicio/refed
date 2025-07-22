@@ -4,6 +4,8 @@
 # - https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#interface-libraries
 # - https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html
 # - https://cmake.org/cmake/help/latest/command/install.html
+# - https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html#creating-packages
+# - https://cmake.org/cmake/help/latest/module/CMakePackageConfigHelpers.html#command:configure_package_config_file
 cmake_minimum_required(VERSION 3.23)
 
 project(refed
@@ -53,6 +55,10 @@ target_compile_features(refed INTERFACE cxx_std_11)
 # Install #
 ###########
 
+# Module to get access to some helper functions for creating config files that
+# will ease the use of find_package command and integrate better with cmake FetchContent_MakeAvailable()
+include(CMakePackageConfigHelpers)
+
 # @see https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#interface-libraries
 # @see https://cmake.org/cmake/help/latest/command/install.html#targets
 install(TARGETS refed
@@ -66,7 +72,22 @@ install(TARGETS refed
     # RUNTIME        DESTINATION "${CMAKE_INSTALL_BINDIR}"
 )
 
+# This will produce a cmake file at `$CMAKE_INSTALL_PREFIX/lib/cmake/refed/refedTargets.cmake`
+# for projects to import the refed target with `refed::refed`
 install(EXPORT refedTargets
     NAMESPACE   "refed::"
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/refed"
+)
+
+# https://cmake.org/cmake/help/latest/module/CMakePackageConfigHelpers.html#command:configure_package_config_file
+configure_package_config_file(
+    "Config.cmake.in"                                 # Input
+    "${CMAKE_CURRENT_BINARY_DIR}/refedConfig.cmake"   # Output
+    INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/refed"
+)
+
+install(FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/refedConfig.cmake"
+        #   "${CMAKE_CURRENT_BINARY_DIR}/refedConfigVersion.cmake"
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/refed
 )
