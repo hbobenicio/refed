@@ -16,6 +16,7 @@ Because it's dumb to rely on compiler specific macros for this simple use case.
 ## Usage
 
 ```cpp
+//NOTE just for std::cout on this example. Not needed for refer::Defer
 #include <iostream>
 
 #include <refed/defer.hpp>
@@ -25,9 +26,15 @@ int main() {
 
     //NOTE Defer objects need to be lvalues!
     //     (rvalue objects have temporary storage tied to their expressions and don't live long enough)
+    //NOTE In c++26 you can just use the `_` underscore placeholder instead of these dummy variable names
     Defer d1{ [](){ std::cout << "It Works 1!\n"; } };
     Defer d2{ [](){ std::cout << "It Works 2!\n"; } };
     Defer d3{ [](){ std::cout << "It Works 3!\n"; } };
+
+    // It will print:
+    // It Works 3!
+    // It Works 2!
+    // It Works 1!
 }
 ```
 

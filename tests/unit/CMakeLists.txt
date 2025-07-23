@@ -16,7 +16,7 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(refed-tests-unit
-    "defer-basic.unittest.cpp"
+    "defer.unittest.cpp"
 )
 
 target_link_libraries(refed-tests-unit
