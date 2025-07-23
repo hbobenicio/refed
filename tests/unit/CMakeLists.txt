@@ -16,11 +16,12 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(refed-tests-unit
-    "hello.unittest.cpp"
+    "defer-basic.unittest.cpp"
 )
 
 target_link_libraries(refed-tests-unit
     GTest::gtest_main
+    refed
 )
 
 include(GoogleTest)

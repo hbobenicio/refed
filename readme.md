@@ -23,10 +23,25 @@ Because it's dumb to rely on compiler specific macros for this simple use case.
 int main() {
     using refed::Defer;
 
+    //NOTE Defer objects need to be lvalues!
+    //     (rvalue objects have temporary storage tied to their expressions and don't live long enough)
     Defer d1{ [](){ std::cout << "It Works 1!\n"; } };
     Defer d2{ [](){ std::cout << "It Works 2!\n"; } };
     Defer d3{ [](){ std::cout << "It Works 3!\n"; } };
 }
+```
+
+## Developing
+
+### Tests
+
+```bash
+# Configuring/Building for tests
+cmake -S . -B build -DREFED_TESTS_ENABLE:BOOL=ON
+cmake --build build
+
+# Running tests
+ctest --test-dir build/tests/unit/ --output-on-failure
 ```
 
 ## TODO CMake docs (install, fetchcontent dependency, plain-old tarballs, etc)
