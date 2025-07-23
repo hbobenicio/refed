@@ -9,13 +9,23 @@
 cmake_minimum_required(VERSION 3.23)
 
 project(refed
-    VERSION   0.0.1
-    LANGUAGES CXX
+    VERSION      0.0.1
+    DESCRIPTION  "A simple C++ Defer implementation"
+    HOMEPAGE_URL "https://github.com/hbobenicio/refed"
+    LANGUAGES    CXX
 )
+
+option(REFED_TESTS_ENABLE "Refed: Enables building tests" OFF)
 
 include(FetchContent)
 
-# We include this just to use CMAKE_INSTALL_INCLUDEDIR and CMAKE_INSTALL_LIBDIR (is that an overkill?!)
+# We include this just to use:
+#
+# - CMAKE_INSTALL_INCLUDEDIR (aka "include"); and
+# - CMAKE_INSTALL_LIBDIR (aka "lib")
+#
+# Is that an overkill?!
+#
 # @see https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html
 include(GNUInstallDirs)
 
@@ -56,38 +66,9 @@ target_compile_features(refed INTERFACE cxx_std_11)
 # Tests      #
 ##############
 
-# GoogleTest requires at least C++17
-# TODO do this only for the tests target
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-FetchContent_Declare(
-    googletest
-    GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG        v1.17.0
-)
-
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-FetchContent_MakeAvailable(googletest)
-
-enable_testing()
-
-######################################################################
-# Tests: Target: refed-tests-unit (Unit Tests for the refed library) #
-######################################################################
-
-add_executable(refed-tests-unit
-    "${CMAKE_SOURCE_DIR}/tests/dummy.cpp"
-)
-
-target_link_libraries(refed-tests-unit
-    GTest::gtest_main
-)
-
-include(GoogleTest)
-gtest_discover_tests(refed-tests-unit)
+if(${REFED_TESTS_ENABLE})
+    add_subdirectory("tests/unit")
+endif()
 
 ###########
 # Install #
@@ -117,17 +98,19 @@ install(EXPORT refedTargets
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/refed"
 )
 
-# Generate the config and version files
+# CMakePackageConfigHelpers: Create the Version file
+# @see https://cmake.org/cmake/help/latest/module/CMakePackageConfigHelpers.html#command:write_basic_package_version_file
 write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/refedConfigVersion.cmake"
     VERSION "${PROJECT_VERSION}"
     COMPATIBILITY SameMajorVersion
 )
 
-# https://cmake.org/cmake/help/latest/module/CMakePackageConfigHelpers.html#command:configure_package_config_file
+# CMakePackageConfigHelpers: Create the Config file
+# @see https://cmake.org/cmake/help/latest/module/CMakePackageConfigHelpers.html#command:configure_package_config_file
 configure_package_config_file(
-    "refedConfig.cmake.in"                            # Input
-    "${CMAKE_CURRENT_BINARY_DIR}/refedConfig.cmake"   # Output
+    "refedConfig.cmake.in"                           # Input
+    "${CMAKE_CURRENT_BINARY_DIR}/refedConfig.cmake"  # Output
     INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/refed"
 )
 
