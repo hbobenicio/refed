@@ -1,0 +1,27 @@
+name: main-workflow
+run-name: main-workflow run by ${{ github.actor }}
+on: [push]
+
+# Environment Variable Example
+# env:
+#   FOO: Bar
+
+jobs:
+  tests-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Repo: Checkout'
+        uses: actions/checkout@v4
+      
+      - name: 'Repo: ls'
+        run: |
+          ls ${{ github.workspace }}
+
+      - name: 'CMake: Configure'
+        run: cmake -S . -B "${{github.workspace}}/build" -DREFED_TESTS_ENABLE:BOOL=ON
+
+      - name: 'CMake: Build'
+        run: cmake --build "${{github.workspace}}/build"
+
+      - name: 'CMake: Test (CTest)'
+        run: ctest --test-dir "${{github.workspace}}/build/tests/unit/" --output-on-failure
