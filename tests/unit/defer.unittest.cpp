@@ -24,7 +24,7 @@ TEST(DeferTestSuite, BasicTest)
     x += 2;
 }
 
-TEST(DeferSuite, ThrowTest)
+TEST(DeferTestSuite, ThrowTest)
 {
     int x = 42;
 

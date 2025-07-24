@@ -15,17 +15,12 @@ project(refed
     LANGUAGES    CXX
 )
 
+#TODO consider renaming this to something like spdlog uses (SPDLOG_BUILD_TESTS)
 option(REFED_TESTS_ENABLE "Refed: Enables building tests" OFF)
 
 include(FetchContent)
 
-# We include this just to use:
-#
-# - CMAKE_INSTALL_INCLUDEDIR (aka "include"); and
-# - CMAKE_INSTALL_LIBDIR (aka "lib")
-#
-# Is that an overkill?!
-#
+# We include this for CMAKE_INSTALL_INCLUDEDIR (aka "include"), CMAKE_INSTALL_LIBDIR (aka "lib"), etc.
 # @see https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html
 include(GNUInstallDirs)
 
@@ -74,12 +69,15 @@ endif()
 # Install #
 ###########
 
-# Install the target and headers
+# Install target output artifacts (public API headers + cmake files for find_package() and FetchContent)
 # 
 # @see https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#interface-libraries
 # @see https://cmake.org/cmake/help/latest/command/install.html#targets
 install(TARGETS refed
-    EXPORT refedTargets
+    EXPORT      refedTargets
+    #DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
+    # DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/refed"
+
     FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     # INCLUDES         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
 
@@ -89,13 +87,13 @@ install(TARGETS refed
     # RUNTIME        DESTINATION "${CMAKE_INSTALL_BINDIR}"
 )
 
-# Install the export set
+# Install a CMake file exporting targets for dependent projects
 # 
 # This will produce a cmake file at `$CMAKE_INSTALL_PREFIX/lib/cmake/refed/refedTargets.cmake`
 # for projects to import the refed target with `refed::refed`
 install(EXPORT refedTargets
-    NAMESPACE   "refed::"
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/refed"
+    NAMESPACE   "refed::"
 )
 
 # CMakePackageConfigHelpers: Create the Version file
@@ -121,3 +119,5 @@ install(
     DESTINATION
         "${CMAKE_INSTALL_LIBDIR}/cmake/refed"
 )
+
+export(EXPORT refedTargets FILE "${CMAKE_CURRENT_BINARY_DIR}/refersTargets.cmake")
