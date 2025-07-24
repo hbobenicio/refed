@@ -15,9 +15,15 @@ project(refed
 # Options and Variables
 # ------------------------------------------------------------------------------
 
-#TODO consider renaming this to something like spdlog uses (SPDLOG_BUILD_TESTS)
+#TODO consider defaulting the CMAKE_BUILD_TYPE to Release or adding a warning if it's not set (how?)
+
+#TODO consider renaming this to something like spdlog or fmt uses (SPDLOG_BUILD_TESTS or FMT_TEST)
+#     or relying on CTest BUILD_TESTING
 option(REFED_TESTS_ENABLE "Refed: Enables building tests" OFF)
 
+# ------------------------------------------------------------------------------
+# CMake Dependency Modules
+# ------------------------------------------------------------------------------
 include(FetchContent)               # @see https://cmake.org/cmake/help/latest/module/FetchContent.html
 include(GNUInstallDirs)             # @see https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html
 include(CMakePackageConfigHelpers)  # @see https://cmake.org/cmake/help/latest/module/CMakePackageConfigHelpers.html

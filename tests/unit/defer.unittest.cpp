@@ -2,6 +2,7 @@
 
 #include <refed/defer.hpp>
 
+// Tests basic defering scenarios
 TEST(DeferTestSuite, BasicTest)
 {
     int x = 42;
@@ -24,6 +25,7 @@ TEST(DeferTestSuite, BasicTest)
     x += 2;
 }
 
+// Defer must work in exception throwing scenarios
 TEST(DeferTestSuite, ThrowTest)
 {
     int x = 42;

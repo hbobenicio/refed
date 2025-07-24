@@ -44,12 +44,22 @@ int main() {
 ### Tests
 
 ```bash
-# Configuring/Building for tests
-cmake -S . -B build -DREFED_TESTS_ENABLE:BOOL=ON
+# Configuring for tests
+cmake -S . -B build -DREFED_TESTS_ENABLE=ON
+
+# Building for tests
 cmake --build build
 
 # Running tests
 ctest --test-dir build/tests/unit/ --output-on-failure
+
+# Alternative way to run tests
+cd build/tests/unit/
+ctest --output-on-failure
+
+# or maybe
+cd build/tests/unit/
+./refed-tests-unit
 ```
 
 ## TODO CMake docs (install, fetchcontent dependency, plain-old tarballs, etc)
