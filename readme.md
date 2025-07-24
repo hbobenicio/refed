@@ -2,8 +2,9 @@
 
 Yet another defer c++ library, but a sane one.
 
-Because RAII with structs/classes with dozens of lines with rules of `rand(time(nullptr))` is just complex overkill
-for the majority of the cases where you just want to defer the calling of a cleanup function in a specific scope block.
+Because dozens of lines for RAII with structs/classes that follows the "Rule of `rand(time(nullptr))`" is just
+complex overkill for the majority of the cases where you just want to defer the calling of a
+cleanup function in a specific scope block.
 
 Because creating dummy Deleter Functors and using std::unique_ptr just to cleanup block-scoped resources are nonsense boilerplate.
 
