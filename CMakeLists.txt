@@ -120,4 +120,4 @@ install(
         "${CMAKE_INSTALL_LIBDIR}/cmake/refed"
 )
 
-export(EXPORT refedTargets FILE "${CMAKE_CURRENT_BINARY_DIR}/refersTargets.cmake")
+export(EXPORT refedTargets FILE "${CMAKE_CURRENT_BINARY_DIR}/refedTargets.cmake")
