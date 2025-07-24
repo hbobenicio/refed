@@ -1,6 +1,6 @@
 # refed
 
-[![main-workflow](https://github.com/hbobenicio/refed/actions/workflows/on-push-tests.yml/badge.svg)](https://github.com/hbobenicio/refed/actions/workflows/on-push-tests.yml)
+[![main-workflow](https://github.com/hbobenicio/refed/actions/workflows/on-push-pr-tests.workflow.yml/badge.svg)](https://github.com/hbobenicio/refed/actions/workflows/on-push-pr-tests.workflow.yml)
 
 Yet another defer c++ library, but a sane one.
 
