@@ -74,10 +74,12 @@ endif()
 # TODO deb packaging?
 # TODO tarball packaging?
 # ------------------------------------------------------------------------------
-set(refed_install_namespace          "refed::")
-set(refed_install_cmake_destination  "${CMAKE_INSTALL_LIBDIR}/cmake/refed")
-set(refed_install_cmake_config_file  "${CMAKE_CURRENT_BINARY_DIR}/refedConfig.cmake")
-set(refed_install_cmake_version_file "${CMAKE_CURRENT_BINARY_DIR}/refedConfigVersion.cmake")
+set(refed_export_name                   "refed-targets")
+set(refed_install_namespace             "refed::")
+set(refed_install_cmake_destination     "${CMAKE_INSTALL_LIBDIR}/cmake/refed")
+set(refed_install_cmake_config_file_in  "${CMAKE_CURRENT_LIST_DIR}/cmake/refed-config.cmake.in")
+set(refed_install_cmake_config_file_out "${CMAKE_CURRENT_BINARY_DIR}/refed-config.cmake")
+set(refed_install_cmake_version_file    "${CMAKE_CURRENT_BINARY_DIR}/refed-config-version.cmake")
 
 # Install target output artifacts (public API headers + cmake files for find_package() and FetchContent)
 # 
@@ -85,37 +87,34 @@ set(refed_install_cmake_version_file "${CMAKE_CURRENT_BINARY_DIR}/refedConfigVer
 # @see https://cmake.org/cmake/help/latest/command/install.html#targets
 install(
     TARGETS refed
-    EXPORT  refedTargets
-    # DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
-    # DESTINATION "${refed_install_cmake_destination}"
+    EXPORT  "${refed_export_name}"
     FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-    INCLUDES         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     ARCHIVE          DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     LIBRARY          DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     RUNTIME          DESTINATION "${CMAKE_INSTALL_BINDIR}"
 )
 
+# Allow projects to use the cmake targets file directly from build dir without needing to install it
 export(TARGETS refed
     NAMESPACE "${refed_install_namespace}"
-    FILE "${CMAKE_CURRENT_BINARY_DIR}/refedTargets.cmake"
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/${refed_export_name}.cmake"
 )
 
 # Install a CMake file exporting targets for dependent projects
 # 
-# This will produce a cmake file at `$CMAKE_INSTALL_PREFIX/lib/cmake/refed/refedTargets.cmake`
+# This will produce a cmake file at `$CMAKE_INSTALL_PREFIX/lib/cmake/refed/${refed_export_name}.cmake`
 # for projects to import the refed target with `refed::refed`
-install(EXPORT refedTargets
+install(
+    EXPORT      "${refed_export_name}"
     DESTINATION "${refed_install_cmake_destination}"
     NAMESPACE   "${refed_install_namespace}"
 )
 
-# export(EXPORT refedTargets FILE "${CMAKE_CURRENT_BINARY_DIR}/refedTargets.cmake")
-
 # CMakePackageConfigHelpers: Create the Config file
 # @see https://cmake.org/cmake/help/latest/module/CMakePackageConfigHelpers.html#command:configure_package_config_file
 configure_package_config_file(
-    "refedConfig.cmake.in"                # Input
-    "${refed_install_cmake_config_file}"  # Output
+    "${refed_install_cmake_config_file_in}"
+    "${refed_install_cmake_config_file_out}"
     INSTALL_DESTINATION "${refed_install_cmake_destination}"
 )
 
@@ -129,7 +128,7 @@ write_basic_package_version_file(
 
 install(
     FILES
-        "${refed_install_cmake_config_file}"
+        "${refed_install_cmake_config_file_out}"
         "${refed_install_cmake_version_file}"
     DESTINATION
         "${refed_install_cmake_destination}"
