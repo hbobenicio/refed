@@ -1,5 +1,7 @@
 # refed
 
+[![main-workflow](https://github.com/hbobenicio/refed/actions/workflows/on-push-tests.yml/badge.svg)](https://github.com/hbobenicio/refed/actions/workflows/on-push-tests.yml)
+
 Yet another defer c++ library, but a sane one.
 
 Because dozens of lines for RAII with structs/classes that follows the "Rule of `rand(time(nullptr))`" is just
