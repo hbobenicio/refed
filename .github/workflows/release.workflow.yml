@@ -1,7 +1,27 @@
+name: release-workflow
+run-name: release-workflow run by ${{ github.actor }}
 on:
   push:
     tags:
       - 'v*'
+# on:
+#   workflow_run:
+#     workflows: ["Run Tests"]
+#     branches: [main]
+#     types: 
+#       - completed
+
+# jobs:
+#   on-success:
+#     runs-on: ubuntu-latest
+#     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+#     steps:
+#       - run: echo 'The Run Tests workflow passed'
+
+# needed to avoid the `actions/create-release@v1` error:
+# `Error: Resource not accessible by integration`
+permissions:
+  contents: write
 
 jobs:
   release-job:
