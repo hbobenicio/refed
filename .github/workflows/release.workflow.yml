@@ -1,0 +1,61 @@
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 'CMake: Configure'
+        run: cmake -S . -B "${{github.workspace}}/build" -DREFED_TESTS_ENABLE:BOOL=ON
+
+      - name: 'CMake: Build'
+        run: cmake --build "${{github.workspace}}/build"
+
+      - name: 'CMake: Test (CTest)'
+        run: ctest --test-dir "${{github.workspace}}/build/tests/unit/" --output-on-failure
+
+      - name: 'CMake: Build Package'
+        run: cmake --build "${{github.workspace}}/build" --target package
+
+      - name: 'CMake: Build Debian Package'
+        run: |
+          cd "${{github.workspace}}/build"
+          cpack -G DEB
+
+      - name: Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          # automatically provided
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }} # The pushed tag
+          release_name: "Release ${{ github.ref }}"
+          draft: false
+          prerelease: false
+          # body_path: CHANGELOG.md # Optional: Use a file for release notes
+
+      - name: "Release: Upload Tarball Package"
+        uses: "actions/upload-release-asset@v1"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          upload_url: "${{ steps.create_release.outputs.upload_url }}"
+          asset_path: "${{github.workspace}}/build/refed-0.0.1-Linux.tar.gz"  #FIXME get the version/tag properly (from same cmake source ideally)
+          asset_name: "Tarball"
+          asset_content_type: "application/octet-stream"
+
+      - name: "Release: Upload Debian Package"
+        uses: "actions/upload-release-asset@v1"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          upload_url: "${{ steps.create_release.outputs.upload_url }}"
+          asset_path: "${{github.workspace}}/build/refed-0.0.1-Linux.deb"  #FIXME get the version/tag properly (from same cmake source ideally)
+          asset_name: "Tarball"
+          asset_content_type: "application/octet-stream"
