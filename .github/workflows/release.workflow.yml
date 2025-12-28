@@ -20,12 +20,11 @@ on:
 
 # needed to avoid the `actions/create-release@v1` error:
 # `Error: Resource not accessible by integration`
-permissions:
-  contents: write
-
 jobs:
   release-job:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -77,5 +76,5 @@ jobs:
         with:
           upload_url: "${{ steps.create_release.outputs.upload_url }}"
           asset_path: "${{github.workspace}}/build/refed-0.0.1-Linux.deb"  #FIXME get the version/tag properly (from same cmake source ideally)
-          asset_name: "Tarball"
+          asset_name: "refed-0.0.1-Linux.deb"
           asset_content_type: "application/octet-stream"
